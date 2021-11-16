@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float speed = 15f;
     public float gravity = -9.81f;
-    public float jumpHeight = 3f;
+    public float jumpHeight = 5f;
     Vector3 velocity;
 
     public Transform groundCheck;
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(Input.GetButtonDown("Jump")&&isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight - 2 * gravity);
+            velocity.y = Mathf.Sqrt(jumpHeight -  gravity);
         }
     }
 }

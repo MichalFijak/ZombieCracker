@@ -35,13 +35,17 @@ public class GunScript : MonoBehaviour
             if(enemy!=null)
             {
                 enemy.TakeDamage(damage);
+
             }
             if (hit.rigidbody != null)
             {
                 hit.rigidbody.AddForce(-hit.normal * impact);
+
             }
-            GameObject impactGO=Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            GameObject impactGO = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(impactGO, 2f);
+
+
         }
     }
 }

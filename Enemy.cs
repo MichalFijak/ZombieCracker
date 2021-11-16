@@ -54,7 +54,8 @@ public class Enemy : MonoBehaviour
     }
     private void Chasing()
     {
-        agent.SetDestination(player.position);
+        Vector3 offset = new Vector3(1, 0, 1);
+        agent.SetDestination((player.position)-offset);
     }
     private void AttackPlayer()
     {
@@ -74,9 +75,21 @@ public class Enemy : MonoBehaviour
     }
     public void TakeDamage(float amount)
     {
+        /* if healt == 50 then animacja upadku
+         * StopChasing();
+         * stopchasing()
+         * {
+         * set destination (0);
+         * 
+         * waitfor 2 s
+         * chasing();
+         * }
+         * 
+         */
         health -= amount;
         if(health<=0)
         {
+            //upadek + wait for 2 s then
             Die();
         }
     }

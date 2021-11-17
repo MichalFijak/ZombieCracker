@@ -1,12 +1,16 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
+    private Animator animator;
+
     public NavMeshAgent agent;
     public Transform player;
     public LayerMask whatIsGround, whatIsPlayer;
-    public float health = 50f;
+    public int health = 100;
 
+    public EnemyHealth healthBar;
 
     // Patroling
     public Vector3 walkPoint;
@@ -25,18 +29,30 @@ public class Enemy : MonoBehaviour
     {
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+        healthBar.SetMaxHealth(health);
+
     }
     private void Update()
     {
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-        if (!playerInAttackRange && !playerInSightRange) Patroling();
+        if (!playerInAttackRange && !playerInSightRange) StartCoroutine(PatrolingStart());
         if (!playerInAttackRange && playerInSightRange) Chasing();
         if (playerInAttackRange && playerInSightRange) AttackPlayer();
 
     }
+
+    IEnumerator PatrolingStart()
+    {
+        yield return new WaitForSeconds(1.0f);
+        Patroling();
+    }
+
+
     private void Patroling()
     {
+        animator.SetTrigger("IsMoving");
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
@@ -54,6 +70,7 @@ public class Enemy : MonoBehaviour
     }
     private void Chasing()
     {
+        animator.SetTrigger("IsChasing");
         Vector3 offset = new Vector3(1, 0, 1);
         agent.SetDestination((player.position)-offset);
     }
@@ -61,7 +78,7 @@ public class Enemy : MonoBehaviour
     {
         agent.SetDestination(transform.position);
         transform.LookAt(player);
-
+        animator.SetTrigger("IsAttacking");
         if(!alreadyAttacked)
         {
             alreadyAttacked = true;
@@ -73,7 +90,7 @@ public class Enemy : MonoBehaviour
     {
         alreadyAttacked = false;
     }
-    public void TakeDamage(float amount)
+    public void TakeDamage(int amount)
     {
         /* if healt == 50 then animacja upadku
          * StopChasing();
@@ -89,9 +106,18 @@ public class Enemy : MonoBehaviour
         health -= amount;
         if(health<=0)
         {
+
             //upadek + wait for 2 s then
-            Die();
+            animator.SetTrigger("IsFalling");
+
+            StartCoroutine(Died());
         }
+        healthBar.SetHealth(health);
+    }
+    IEnumerator Died()
+    {
+        yield return new WaitForSeconds(1.2f);
+        Die();
     }
     private void Die()
     {

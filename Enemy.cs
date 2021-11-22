@@ -4,12 +4,11 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
     private Animator animator;
-
+    
     public NavMeshAgent agent;
     public Transform player;
     public LayerMask whatIsGround, whatIsPlayer;
     public int health = 100;
-
     public EnemyHealth healthBar;
 
     // Patroling
@@ -27,6 +26,7 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
+        
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -84,7 +84,7 @@ public class Enemy : MonoBehaviour
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
-
+       
     }
     private void ResetAttack()
     {
@@ -124,6 +124,8 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -131,4 +133,6 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, sightRange);
     }
+
+
 }
